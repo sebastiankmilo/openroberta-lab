@@ -194,14 +194,14 @@ The main commands of the script can be seen if you run `$SCRIPT_DIR/run.sh` with
 The shell script `$SCRIPT_DIR/run.sh` has commands, that are used to administrate the framework.
  
 * `auto-deploy`: usually called from cron. It takes server names from variable `AUTODEPLOY` from `config.sh` and re-deploys each server, if the git
-  repository connected to this server has got new commits. Use `crontab -e` to add the following line to the crontab to run this is:
+  repository connected to this server has got new commits. Use `crontab -e` to add the following line to the crontab to look for commits every 5 minutes:
   
 ```bash
 */5 * * * * bash <SCRIPT_DIR>/scripts/run.sh -q auto-deploy >><BASE_DIR>/logs/cronlog.txt
 ```
 
 * `backup`: usually called from cron. It takes a database name and creates a database backup in the `dbAdmin` directory.
-  Use `crontab -e` to add the following line to the crontab to run this is:
+  Use `crontab -e` to add the following line to the crontab to generate a database backup every night at 2 o'clock:
   
 ```bash
 0 2 * * * bash <SCRIPT_DIR>/run.sh -q backup <database-name> >><BASE_DIR>/logs/cronlog.txt
@@ -210,7 +210,7 @@ The shell script `$SCRIPT_DIR/run.sh` has commands, that are used to administrat
 
 * `cleanup-temp-user-dirs`: usually called from cron. It takes a server name and runs a shell in the corresponding container, that will remove temporary
   old data allocated by the cross compiler. IKt is assumed, that temporary data is garbabge one day after their creation.
-  Use `crontab -e` to add the following line to the crontab to run this is:
+  Use `crontab -e` to add the following line to the crontab to remove garbage every night 20 minutes after 2:
   
 ```bash
 20 2 * * * bash <SCRIPT_DIR>/run.sh -q admin <server-name> cleanup-temp-user-dirs >><BASE_DIR>/logs/cronlog.txt
