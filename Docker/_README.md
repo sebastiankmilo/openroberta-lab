@@ -256,6 +256,21 @@ systemctl status openrobertalab       # to see logging
 journalctl -u openrobertalab.service  # to see more logging
 ```
 
+## Note about the -d command lone arguments for the openrobertalab server container
+
+The global properties needed for the openrobertalab server are found in resource `/openroberta.properties`. At start time these parameter can be modified
+by an arbitrary number of command line arguments like `-d KEY=VALUE`. The final list of these `-d` arguments is build as follows:
+
+* script `start.sh`: the shell script `start.sh` is inside the openrobertalab server container and starts the JVM with main class `ServerStarter`.
+  It contains some `-d` arguments, that are the
+  same for _all_ openrobertalab server container and adds more `-d` arguments (passed by the script that starts the container) by adding `$*`
+* script `_start.sh`: the docker container is started (via the main script `run.sh`) by the bash statements found in `_start.sh`. Here more `-d` statements are added,
+  that refer to the OpenRoberta server instance (master, test, dev). They adds database names, network names, logging level, logging configuration and mount points.
+  Furthermore the script adds as the last level of `-d` additions those founds invariable `START_ARGS`
+* variable `START_ARGS`: every OpenRoberta server has a configuration file `decl.sh`. Here the shell variable `START_ARGS` can define more `-d` arguments.
+  *NOTE:* this is the place for the last deployer-defined additions as declaring the list of robot plugins to use, whether this is the public server or not, and so on.
+  It is possible, but _not_ adviced to overwrite properties already defined at the two places described above
+
 # Run the integration tests
 
 The integration test container clones a branch, executes all tests, including the integration tests and
